@@ -74,18 +74,16 @@ Expected output: `✔ Validation passed` with no errors or warnings.
 
 ### From this repository's self-hosted marketplace
 
-Once a remote repository has been created and published, users can add the
-marketplace and install by name:
+Add the marketplace and install by name:
 
 ```bash
-# Replace <owner>/<repo> with the actual repository path once published
-claude plugin marketplace add <owner>/<repo>
+claude plugin marketplace add aniketmohite/supranalytics-plugin
 claude plugin install supranalytics@supranalytics-marketplace
 ```
 
-> **Repository URL:** not yet assigned. The `repository` field in
-> `.claude-plugin/plugin.json` and the marketplace install command above will
-> be updated once a standalone remote repository exists.
+> **Note:** The repository is currently private. Users must have GitHub access
+> to clone it. Make the repository public before publishing to Anthropic's
+> directory.
 
 ### From Anthropic's directory (pending review)
 

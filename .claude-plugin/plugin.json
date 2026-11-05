@@ -9,6 +9,7 @@
     "url": "https://suprapps.dev"
   },
   "homepage": "https://supranalytics.app",
+  "repository": "https://github.com/aniketmohite/supranalytics-plugin",
   "license": "MIT",
   "keywords": ["analytics", "web-analytics", "revenue", "funnels", "performance"],
   "icon": "./.claude-plugin/icon.png",
