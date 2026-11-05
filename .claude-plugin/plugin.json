@@ -1,0 +1,19 @@
+{
+  "name": "supranalytics",
+  "displayName": "SuprAnalytics",
+  "version": "1.0.0",
+  "description": "Analytics skills for SuprAnalytics: weekly reports, traffic analysis, funnel analysis, revenue analysis, and performance reviews via the SuprAnalytics MCP server.",
+  "author": {
+    "name": "SuprApps",
+    "email": "support@supranalytics.app",
+    "url": "https://suprapps.dev"
+  },
+  "homepage": "https://supranalytics.app",
+  "license": "MIT",
+  "keywords": ["analytics", "web-analytics", "revenue", "funnels", "performance"],
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://supranalytics.app/docs/mcp",
+  "supportUrl": "https://supranalytics.app",
+  "privacyPolicyUrl": "https://supranalytics.app/privacy",
+  "termsOfServiceUrl": "https://supranalytics.app/terms"
+}

@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+__MACOSX/
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if any tooling is added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# MCP bundle cache (extracted bundle artifacts)
+.mcpb-cache/
+
+# Local env / secrets — never commit these
+.env
+.env.local
+*.pem
+*.key

@@ -1,0 +1,14 @@
+{
+  "name": "supranalytics-marketplace",
+  "description": "SuprApps marketplace providing the SuprAnalytics Claude plugin.",
+  "owner": {
+    "name": "SuprApps",
+    "url": "https://suprapps.dev"
+  },
+  "plugins": [
+    {
+      "name": "supranalytics",
+      "source": "./"
+    }
+  ]
+}
