@@ -1,14 +1,11 @@
 ---
 name: funnel-analysis
 description: >
-  Identify conversion drop-offs in a saved SuprAnalytics funnel. Use when the
-  user asks about funnel performance, conversion rates, drop-offs, where
-  visitors leave the checkout or sign-up flow, or funnel analysis.
-when_to_use: >
-  Trigger on phrases like "funnel analysis", "funnel", "conversion funnel",
-  "where do people drop off", "checkout drop-off", "sign-up conversion",
-  "funnel steps", "conversion rate", or any request to understand step-by-step
-  conversion through a predefined flow.
+  Identify conversion drop-offs in a saved SuprAnalytics funnel. Trigger on
+  phrases like "funnel analysis", "funnel", "conversion funnel", "where do
+  people drop off", "checkout drop-off", "sign-up conversion", "funnel steps",
+  "conversion rate", or any request to understand step-by-step conversion
+  through a predefined flow.
 ---
 
 # Funnel Analysis skill
@@ -18,6 +15,10 @@ when_to_use: >
 ## Purpose
 
 Find conversion drop-offs in a saved funnel. Default period is the last 30 days.
+
+## Shared reporting standards
+
+Load `skills/shared/REPORTING.md` before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure.
 
 ---
 
@@ -60,7 +61,13 @@ Collect for each step:
 - Completion rate and drop-off rate (if returned; otherwise calculate from the step counts, with a valid denominator)
 - Overall funnel conversion rate (if returned)
 
-If a comparison period is supported by `get_funnel`, request it and record both current and prior values.
+**Comparison period**: Attempt a separate `get_funnel` call with an explicit prior-period date range to obtain a comparison. If that also returns no comparison data, cite the specific tool contract limitation rather than the absence of comparison fields in a single response.
+
+**avgTime / duration fields**: If the API returns a time-on-step or average time field without documented units, do not convert the value. Report it raw with "(unit unknown)".
+
+**Funnel counts vs event totals**: Funnel step counts measure visitors completing ordered steps. Total event occurrences and unique visitors who fired an event outside the funnel context are different metrics. Do not conflate them.
+
+**Goal list and event list semantics**: `list_goals` returns configured goals, not every event the site fires. The absence of an event from the goal list does not prove the event had zero occurrences. Funnel steps may reference custom events or page conditions that are not configured as goals.
 
 ### Step 5 — Compose the report
 
@@ -84,7 +91,13 @@ Period: [start date] – [end date] ([timezone])
 Calculations:
 - Step rate = visitors completing step ÷ visitors entering step. Only calculate with a valid non-zero denominator.
 - Drop-off count = visitors entering − visitors completing.
-- If the API returns these values directly, use them; label which are API-provided and which are calculated.
+- If the API returns these values directly, use them. Label each value as API-provided or calculated.
+- Use event names exactly as returned by the API. Apply these interpretations:
+  - An event named `sign_in_email_sent` or similar means a sign-in email was dispatched — not that the user authenticated.
+  - An event named `sign_in_google_clicked` or similar means the button was clicked — not that authentication completed.
+  - An event named `signed_up` should be described according to its verified tracking definition. Do not assume it confirms account creation without evidence.
+  - Neither email-sent nor click events establish completed authentication or signup.
+- If the final funnel step is a click or email event (rather than a confirmed completion event), do not label zero completions as "zero signups." Describe it as "zero visitors completed [step name]."
 
 **3. Overall conversion**
 
@@ -104,6 +117,10 @@ Each hypothesis must be framed as a possible explanation, not a confirmed cause.
 - "The largest drop-off is at the payment step (68% of visitors who reach it do not complete). Possible causes include friction in the payment form, trust signals, or pricing. Suggested investigation: review the payment page UX and check whether there are error events recorded there."
 
 Do not infer a cause from counts alone. Do not invent what is on each step's page unless the page URL is in the step name.
+
+If the entire funnel shows near-zero conversions (e.g. many entries but zero or one completions), a funnel definition or instrumentation issue is one possible hypothesis — not a confirmed root cause, and not "most likely." A zero count alone does not establish probability. Do not rank this hypothesis above others. Frame it as: "A tracking or funnel setup issue is one possible explanation. Recommended: verify the funnel step definitions in the SuprAnalytics dashboard and check whether the final-step event fires correctly in a test environment."
+
+Do not offer to modify, rebuild, or save any funnel. All operations in this skill are read-only.
 
 **6. Limitations**
 

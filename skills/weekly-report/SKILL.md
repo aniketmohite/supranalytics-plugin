@@ -2,13 +2,10 @@
 name: weekly-report
 description: >
   Produce a weekly website performance report covering traffic, top sources, top
-  pages, goal conversions, and revenue trends. Use when the user asks for a
-  weekly report, a site summary, how their website performed this week, or what
-  happened last week.
-when_to_use: >
-  Trigger on phrases like "weekly report", "last 7 days", "how did my site do
-  this week", "weekly summary", "week in review", or any request for a
-  concise snapshot of recent website performance.
+  pages, goal conversions, and revenue trends. Trigger on phrases like "weekly
+  report", "last 7 days", "how did my site do this week", "weekly summary",
+  "week in review", or any request for a concise snapshot of recent website
+  performance.
 ---
 
 # Weekly Report skill
@@ -18,6 +15,10 @@ when_to_use: >
 ## Purpose
 
 Produce a clear, accurate weekly website report. Default period is the last 7 days compared with the equivalent preceding 7-day period.
+
+## Shared reporting standards
+
+Load `skills/shared/REPORTING.md` before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure.
 
 ---
 
@@ -38,8 +39,8 @@ Produce a clear, accurate weekly website report. Default period is the last 7 da
 - Default: last 7 complete days compared with the 7 days immediately before that.
 - If the user supplied explicit dates or a named period (e.g., "last week", "this week"), use those instead.
 - Confirm the period and timezone with the user if the website exposes a configured timezone; otherwise state UTC.
-- Label any partial period clearly (e.g., "week to date, ending today at 14:00 UTC").
-- Do not compare a full period against a partial period and report growth.
+- If the period ends at the current day and that day is incomplete, label it in the period header (e.g., "2026-11-01 to 2026-11-06 — today is partial, data through 14:00 UTC").
+- Do not compare a full prior period against a partial current period and report growth.
 
 ### Step 3 — Gather overview metrics
 
@@ -73,6 +74,7 @@ Call `get_pages` for the period. Sort by pageviews descending. Retrieve enough r
 2. If goals exist, call `get_goal_details` or the relevant breakdown to get completion counts.
 3. If no goals are configured, note this in the report without calling further tools.
 4. Do not invent goal names or completion rates.
+5. **Conversion rate calculation**: For goal conversion rates (e.g. signup rate), use unique visitors who completed the goal as the numerator — not total event occurrences. If the API returns occurrences rather than unique converters, state which metric is being used and explain that it may exceed the number of unique converting visitors.
 
 ### Step 8 — Revenue summary (if available)
 
@@ -103,9 +105,10 @@ Period: [start date] – [end date] ([timezone])
 | Revenue (if available) | | | |
 | Goal completions (if configured) | | | |
 
-- Changes: show absolute delta and relative % change. Use "—" if prior period data is unavailable.
-- Label columns clearly. Distinguish percentage-point changes (e.g., bounce rate) from relative changes (e.g., "+12%").
-- Do not average rates (e.g., bounce rate) across segments.
+- Changes: show absolute delta and relative % change. Use "—" if prior period data is unavailable or the field was not returned.
+- When the prior period value is zero, do not compute a percentage change. State the absolute change instead (e.g. "+340 visitors from 0").
+- Label columns clearly. Distinguish percentage-point changes (e.g. bounce rate) from relative changes (e.g. "+12%").
+- Do not average rates (e.g. bounce rate) across segments.
 
 **3. Top 5 sources** (compact table: Source, Visitors, % of total)
 

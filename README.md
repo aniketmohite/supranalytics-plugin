@@ -81,9 +81,8 @@ claude plugin marketplace add aniketmohite/supranalytics-plugin
 claude plugin install supranalytics@supranalytics-marketplace
 ```
 
-> **Note:** The repository is currently private. Users must have GitHub access
-> to clone it. Make the repository public before publishing to Anthropic's
-> directory.
+> This repository is public. Clone it directly or install via the marketplace
+> commands above.
 
 ### From Anthropic's directory (pending review)
 

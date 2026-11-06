@@ -7,6 +7,28 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.0] — 2026-11-06
+
+### Added
+
+- **`skills/shared/REPORTING.md`** — shared reporting standards loaded by every skill, covering evidence vs interpretation labelling, units verification, missing vs zero distinction, date and coverage rules, sample-size caveats, and output structure guidance.
+
+### Changed
+
+All five skills now explicitly load `skills/shared/REPORTING.md` and have been updated with targeted interpretation fixes:
+
+- **`traffic-analysis`**: Added rules for localhost/login referrers (not proof of internal traffic), first-traffic-date vs page launch date, exact-count requirement for small AI referral samples, Direct channel definition, source-total deduplication discrepancy handling, duration unit verification, partial-day labelling, and sort/truncation disclosure for tables.
+- **`funnel-analysis`**: Added comparison-period attempt via separate prior-period call, `avgTime` unit safety rule, goal-list vs event-list semantics note, event-name precision rules (`sign_in_email_sent` ≠ completed auth; `sign_in_google_clicked` ≠ completed auth), zero-completions labelling rule, near-zero funnel pattern framed as hypothesis only, read-only enforcement note.
+- **`revenue-analysis`**: Added recorded-revenue vs actual-revenue distinction, activation-event ≠ purchase rule, absent-attributed-payment cause enumeration, explicit-zero vs unavailable prior-period distinction, template-row-population prohibition, revenue-per-customer valid-denominator guard, source/campaign breakdown omission rule.
+- **`performance-review`**: Separated Core Web Vitals (LCP, INP, CLS) from supporting metrics (FCP, TTFB) in both workflow and output tables; added aggregation-type identification requirement; added provisional-rating rule for small samples; clarified LCP ≠ full page load; added separate-breakdown non-intersection rule; added TTFB-as-hypothesis rule; added SuprAnalytics-is-not-CrUX note; added external-threshold citation requirement; added no-future-audit-schedule and no-trigger-scan rules.
+- **`weekly-report`**: Added partial-today labelling in period header, zero-baseline no-percentage-change rule, and goal conversion rate unique-converters-vs-occurrences distinction.
+
+### Status
+
+Changes are local. This version has not been submitted to or approved by Anthropic's directory.
+
+---
+
 ## [1.0.0] — 2026-11-06
 
 ### Added

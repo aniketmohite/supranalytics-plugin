@@ -2,14 +2,10 @@
 name: performance-review
 description: >
   Review Core Web Vitals, audit findings, and uptime data to prioritise website
-  performance improvements. Use when the user asks about site speed, Core Web
-  Vitals, Largest Contentful Paint, Cumulative Layout Shift, page audit, audit
-  findings, uptime, incidents, or website performance.
-when_to_use: >
-  Trigger on phrases like "performance review", "site speed", "Core Web Vitals",
-  "LCP", "CLS", "INP", "FID", "audit findings", "uptime", "downtime",
-  "incidents", "how fast is my site", "performance audit", or any request to
-  assess website technical performance or reliability.
+  performance improvements. Trigger on phrases like "performance review", "site
+  speed", "Core Web Vitals", "LCP", "CLS", "INP", "FID", "audit findings",
+  "uptime", "downtime", "incidents", "how fast is my site", "performance audit",
+  or any request to assess website technical performance or reliability.
 ---
 
 # Performance Review skill
@@ -19,6 +15,10 @@ when_to_use: >
 ## Purpose
 
 Prioritise website speed, audit, and reliability findings. Use the latest available audit and an appropriate supported period for real-user performance metrics.
+
+## Shared reporting standards
+
+Load `skills/shared/REPORTING.md` before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure.
 
 ---
 
@@ -41,23 +41,31 @@ Prioritise website speed, audit, and reliability findings. Use the latest availa
 - State the data collection dates for each data source separately.
 - Label field data and audit data clearly as different sources.
 
-### Step 3 — Real-user performance (Core Web Vitals / field data)
+### Step 3 — Real-user performance (field data)
 
 Call `get_performance` for the selected website and period.
 
 Collect as available:
-- LCP (Largest Contentful Paint)
-- CLS (Cumulative Layout Shift)
-- INP (Interaction to Next Paint) — preferred over FID where available
-- FID (First Input Delay) — note if this is returned instead of INP
-- TTFB (Time to First Byte)
-- FCP (First Contentful Paint)
+- **Core Web Vitals (CWV)**: LCP (Largest Contentful Paint), INP (Interaction to Next Paint), CLS (Cumulative Layout Shift). These are the official Core Web Vitals.
+- **Supporting / diagnostic metrics**: FCP (First Contentful Paint), TTFB (Time to First Byte). These are not Core Web Vitals — do not label them as such. Place them in a separate supporting metrics section.
+- Note if FID is returned instead of INP; FID is the predecessor metric.
+
+For each metric value returned:
+- Identify the aggregation type (p75, mean, median, maximum, or other) if the API documents it. If the aggregation type is not documented, label the value "(aggregation unspecified)" rather than assuming p75.
+- LCP is not full page-load time. It measures the time to render the largest visible content element. Do not describe it as "time to load the page."
+- If a device breakdown is available, report it separately. Do not infer mobile performance from a predominantly desktop sample.
 
 If the API returns a device or page breakdown, request it when relevant to the user's question.
 
 Distinguish real-user field data (collected from actual visitors) from synthetic audit results (automated lab tests). Do not combine them into a single score without explanation.
 
-If field data is insufficient (too few data points), label it clearly rather than presenting sparse data as reliable.
+If field data is insufficient (too few data points), label ratings as provisional rather than presenting sparse data as reliable.
+
+**SuprAnalytics field data is not CrUX**: Do not label it as an official Chrome User Experience Report dataset or as a Search Console assessment. It is real-user data collected from visitors to the site.
+
+**Causation**: High TTFB motivates server and network investigation — it does not establish the sole cause of slow LCP. Similar LCP and FCP values do not rule out rendering or resource-loading causes. All causal explanations for performance problems must be presented as hypotheses requiring profiling, traces, or further evidence.
+
+**Separate breakdowns are separate aggregations**: Page-level, country-level, and day-level performance data come from separate queries. Do not connect them as the same set of visits (e.g. "slow loads on the docs page from US visitors on November 5") unless a single joint query returned that exact combination.
 
 ### Step 4 — Audit findings
 
@@ -68,9 +76,11 @@ Collect:
 - Severity or score (as returned by the API)
 - Affected pages or elements (if returned)
 
-Do not invent thresholds (e.g., "LCP should be under 2.5s") unless they are stated in the API response or are publicly documented Web Vitals thresholds. If using published thresholds (Good / Needs Improvement / Poor), cite their source (e.g., web.dev).
+Do not invent thresholds unless they are stated in the API response or publicly documented Web Vitals thresholds. If applying published Good / Needs Improvement / Poor thresholds, cite their source (e.g. web.dev/vitals) and verify they are current. Mark each threshold-based rating with its source.
 
 Do not claim a fix is verified without evidence of retesting. Suggested fixes are recommendations, not confirmations.
+
+Do not schedule or trigger new audits. Do not state when the next audit will run unless that information is returned by the API.
 
 ### Step 5 — Uptime and incidents (if relevant)
 
@@ -101,18 +111,26 @@ Field data period: [start date] – [end date] ([timezone])
 Audit data: [date of audit or "latest available"]
 ```
 
-**2. Real-user Core Web Vitals table** (field data)
+**2a. Real-user Core Web Vitals** (field data) — LCP, INP (or FID), CLS
 
-| Metric | Value | Rating | Notes |
-|--------|-------|--------|-------|
-| LCP | | | |
-| CLS | | | |
-| INP (or FID) | | | |
+| Metric | Value | Aggregation | Rating | Sample | Notes |
+|--------|-------|-------------|--------|--------|-------|
+| LCP | | | | | |
+| INP / FID | | | | | |
+| CLS | | | | | |
+
+- **Aggregation**: state the value type (p75, mean, etc.) or "(unspecified)" if not documented by the API.
+- **Rating**: Good / Needs Improvement / Poor only if thresholds come from the API or published standards (cite source, e.g. web.dev/vitals). Mark ratings on small samples as provisional.
+- **Sample**: show the number of data points when available.
+
+**2b. Supporting performance metrics** (field data) — FCP and TTFB
+
+| Metric | Value | Aggregation | Notes |
+|--------|-------|-------------|-------|
+| FCP | | | |
 | TTFB | | | |
 
-- Rating: use Good / Needs Improvement / Poor only if thresholds are available from the API or from published Web Vitals standards; cite the source.
-- Note if the sample size is insufficient for reliable field data.
-- Note the device breakdown if available and relevant.
+FCP and TTFB are diagnostic metrics, not Core Web Vitals.
 
 **3. Audit findings** (prioritised list)
 

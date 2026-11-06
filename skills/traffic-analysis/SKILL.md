@@ -2,14 +2,11 @@
 name: traffic-analysis
 description: >
   Analyse where website visitors come from, which sources and pages drive
-  traffic, and how channels compare. Use when the user asks about traffic
-  sources, referrers, channels, campaigns, top pages, landing pages, where
-  visitors come from, or what is driving traffic.
-when_to_use: >
-  Trigger on phrases like "traffic analysis", "where does my traffic come from",
-  "top sources", "referrers", "channels", "campaigns", "top pages", "landing
-  pages", "AI traffic", "organic traffic", "which pages get the most visits", or
-  any request to understand traffic origin or distribution over a period.
+  traffic, and how channels compare. Trigger on phrases like "traffic analysis",
+  "where does my traffic come from", "top sources", "referrers", "channels",
+  "campaigns", "top pages", "landing pages", "AI traffic", "organic traffic",
+  "which pages get the most visits", or any request to understand traffic
+  origin or distribution over a period.
 ---
 
 # Traffic Analysis skill
@@ -19,6 +16,10 @@ when_to_use: >
 ## Purpose
 
 Explain where visitors come from and which sources and pages matter. Default period is the last 30 days.
+
+## Shared reporting standards
+
+Load `skills/shared/REPORTING.md` before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure.
 
 ---
 
@@ -39,7 +40,7 @@ Explain where visitors come from and which sources and pages matter. Default per
 - Default: last 30 days.
 - Use any explicit period the user provided instead.
 - Use the website's configured timezone; state it. If unavailable, state UTC.
-- Label partial periods clearly.
+- If the period ends at the current day and that day is incomplete, label it as a partial period in the report header.
 
 ### Step 3 — Gather top sources and channels
 
@@ -90,14 +91,14 @@ Period: [start date] – [end date] ([timezone])
 | Source / Channel | Visitors | % of total | Sessions |
 |-----------------|----------|------------|----------|
 
-Include at least the top 5 sources. Note if the list is paginated/truncated.
+Include at least the top 5 sources. State the sort dimension (e.g. "sorted by visitors, descending") and the number of rows returned. Note if the list is paginated or truncated and that more results may exist.
 
 **3. Top pages table** (by pageviews)
 
 | Page | Pageviews | % of total |
 |------|-----------|------------|
 
-Include at least the top 5 pages. Note if truncated.
+Include at least the top 5 pages. State the sort dimension and the number of rows returned. Note if truncated and that more results may exist.
 
 **4. Optional breakdowns** (if requested: countries, devices, campaigns, AI referrals)
 
@@ -105,8 +106,13 @@ Include at least the top 5 pages. Note if truncated.
 
 - Note concentration: e.g., "Two sources account for 68% of visitors."
 - Note meaningful changes if a comparison period was used.
-- Note "Direct" traffic accurately: Direct means no identified referrer, not proof of direct navigation.
-- If AI referral data is present, distinguish it from crawler data.
+- **"Direct" traffic**: Direct means no referrer was detected. This may include direct navigation, bookmarks, dark social, or any referrer stripped before reaching the server. Do not assert the specific mechanism.
+- **AI referral visits**: If present, state the exact visitor count. Keep them entirely separate from crawler request counts. Report the sample size alongside any metric and avoid engagement or quality conclusions from small counts; there is no universal threshold below which a sample is automatically unreliable — the required size depends on the claim being made.
+- **Localhost / private-IP referrers**: The presence of a localhost or private-IP referrer does not establish that internal or employee traffic was counted. If potentially relevant, recommend investigating internal-traffic exclusion filter settings as a next step — do not claim filters are absent, disabled, or ineffective.
+- **Path-based referrers** (e.g. /login, /dashboard): These do not establish employee or owner activity.
+- **First traffic to a page**: The first date a page appears in traffic data does not establish when the page went live.
+- **Source totals vs site-wide uniques**: If the sum of visitors across sources exceeds the site-wide unique visitor count, note the discrepancy as unresolved. Do not explain it as visitors arriving via multiple sources unless the tool's documented counting semantics support that explanation.
+- **Duration fields**: If session or visit duration units are not documented, do not convert raw values to minutes or seconds. Report the raw value with "(unit unknown)". Flag negative durations.
 - Avoid ranking a source as best solely because it has a high engagement rate on a small sample.
 
 **6. Possible investigation areas**

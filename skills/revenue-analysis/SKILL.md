@@ -2,14 +2,11 @@
 name: revenue-analysis
 description: >
   Report revenue totals, sources, conversion trends, and attribution data from
-  SuprAnalytics. Use when the user asks about revenue, conversions, customers,
-  sales attributed through analytics, revenue by source, or revenue trends over
-  a period.
-when_to_use: >
-  Trigger on phrases like "revenue analysis", "how much revenue", "revenue by
-  source", "revenue trends", "conversion revenue", "customers", "sales from
-  analytics", "revenue attribution", "which channel drives revenue", or any
-  request to understand monetisation or revenue data tracked in SuprAnalytics.
+  SuprAnalytics. Trigger on phrases like "revenue analysis", "how much revenue",
+  "revenue by source", "revenue trends", "conversion revenue", "customers",
+  "sales from analytics", "revenue attribution", "which channel drives revenue",
+  or any request to understand monetisation or revenue data tracked in
+  SuprAnalytics.
 ---
 
 # Revenue Analysis skill
@@ -19,6 +16,10 @@ when_to_use: >
 ## Purpose
 
 Understand revenue sources and conversion. Default period is the last 30 days compared with the equivalent prior period.
+
+## Shared reporting standards
+
+Load `skills/shared/REPORTING.md` before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure.
 
 ---
 
@@ -51,6 +52,14 @@ If the overview does not include revenue:
 - If no revenue data is available at all, clearly state this and stop. Do not fabricate revenue figures. Explain that revenue tracking requires goals or e-commerce events to be configured in SuprAnalytics.
 
 If a comparison period is supported, request it.
+
+**Recorded revenue vs actual revenue**: This skill reports what the SuprAnalytics integration has attributed. It does not confirm total business revenue. If the payment integration is incomplete, attribution may be partial. State this when revenue tracking status is unknown.
+
+**Activation events are not purchases**: An event such as `lifetime_plan_activated`, `plan_activated`, or similar means the event fired — not that a payment was processed. Do not describe activation events as confirmed purchases unless the API separately returns a payment amount attributed to that event.
+
+**Absent attributed payment**: If an activation event is recorded but no payment is attributed, possible causes include website assignment, timing windows, filters, currency settings, ingestion delay, attribution rules, or tracking configuration. Do not declare the cause. Recommend reconciling with the payment provider's records.
+
+**Prior-period zero vs unavailable**: If the API returns an explicit zero for the prior period, label it as a recorded zero (write it as `$0.00` in the currency the API returned). If the prior period predates known data coverage or the field is null/missing, describe it as unavailable — not as "no data" and not as zero.
 
 ### Step 4 — Revenue by source
 
@@ -88,12 +97,16 @@ Currency: [as returned by the API]
 | Customers / conversions | | | |
 | Revenue per customer | | | |
 
-- Use "—" if prior period data is unavailable.
+- Use "—" if prior period data is unavailable or the field was not returned.
 - State the currency as returned; do not convert between currencies.
 - Do not label revenue as profit.
-- Do not invent refunds, fees, MRR, ARR, LTV, or CAC unless they are explicitly present in the data.
+- **Only include rows the API actually returns.** Do not populate template rows for refunds, new revenue, renewal revenue, payment counts, or customer breakdowns unless those fields are explicitly in the response. Do not substitute zeros for absent fields.
+- Revenue per customer: only calculate when both a revenue value and a customer count with a valid non-zero denominator are returned.
+- Do not infer MRR, ARR, LTV, or CAC from unsupported fields.
 
-**3. Revenue by source / channel table** (if available)
+**3. Revenue by source / channel table** (if available and meaningful)
+
+Omit this section if the breakdown adds no actionable information (e.g. all revenue is unattributed or from a single source). Briefly explain why if omitted.
 
 | Source / Channel | Revenue | % of total | Customers |
 |-----------------|---------|------------|-----------|
