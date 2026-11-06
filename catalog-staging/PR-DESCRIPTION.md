@@ -1,8 +1,6 @@
 # SuprAnalytics — Hermes Catalog Submission
 
-> **Status:** Draft. The `sha` field in `supranalytics.yaml` must be updated
-> with the full 40-character release commit SHA before this PR is opened.
-> The `requires_hermes` floor must also be confirmed from catalog CI output.
+> **Status:** Ready. SHA pinned, validation passed, live MCP test passed.
 
 ---
 
@@ -68,24 +66,24 @@ than hanging.
 | Claude strict validation (`claude plugin validate --strict`) | Pass — exit 0, `✔ Validation passed` |
 | `hermes plugins validate` (v0.23.0) | Pass — `portable manifest`, `manifest fields`, `config schema`, `security scan` all pass; isolation verdict `portable`, `host_ready: true`; exit 0 |
 | `hermes plugins validate --install-deps` | **Not run** — `--install-deps` triggers `pm.sync_venv`; irrelevant for a pure remote MCP plugin (no Python deps to install) |
-| Hermes loader live test | **Not run** — `hermes plugins install` requires a published GitHub release tag; working-tree install not supported by the CLI |
-| Hermes OAuth live test | **Not run** — requires model-provider configuration |
+| Hermes loader live test (v0.23.0) | Pass — `hermes plugins install aniketmohite/supranalytics-plugin` → installed, enabled, `portable=True`, all 5 skills discovered as `supranalytics:<skill>`, MCP server `supranalytics` registered |
+| Hermes MCP live test (v0.23.0) | Pass — `list_websites` returned 2 websites; `get_overview`, `get_breakdown`, `get_pages` returned live analytics data; full weekly report generated end-to-end |
 | Skill static review | Pass — all five skills reviewed for client-specific syntax; invocation lines and auth messages made client-agnostic |
 
 ## Known limitations
 
-- `requires_hermes: ">=0.23.0"` is set based on local verification with the
-  v0.23.0 source tree. The PyPI package does not include the portable loader;
-  users must install via the official installer at
-  https://hermes-agent.nousresearch.com/install.sh.
-- Hermes OAuth live integration was not tested end-to-end against the live
-  SuprAnalytics endpoint (requires a configured model provider). The portable
-  `streamable-http` transport relies on Hermes's standard MCP OAuth discovery.
+- `requires_hermes: ">=0.23.0"` — the tested supported version. The PyPI
+  package does not include the portable loader; users must install via the
+  official installer at https://hermes-agent.nousresearch.com/install.sh.
+- OAuth browser flow was not tested (live test used Bearer token auth).
+  The `streamable-http` transport supports Hermes's standard MCP OAuth
+  discovery; users without an API key will authenticate via the browser flow.
 
 ## Tested version and commit
 
 - **Version:** 1.2.0
-- **Hermes validation:** `hermes plugins validate` from v0.23.0 source — Pass
+- **Hermes validation:** `hermes plugins validate` v0.23.0 CLI — Pass
+- **Hermes live test:** install, enable, skill discovery, MCP connection, analytics data — all Pass
 - **Commit SHA:** `269d1aca92f98d4018beceedccd8543fe1148b24`
 
 ## Disclosure (rule 13)
