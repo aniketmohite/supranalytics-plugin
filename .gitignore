@@ -25,3 +25,8 @@ yarn-error.log*
 .env.local
 *.pem
 *.key
+
+# MCP Registry publisher (mcp-publisher) credentials — the CLI stores its token
+# in ~/.config/mcp-publisher/token.json (legacy: ~/.mcp_publisher_token), never
+# in this repository. Ignore the legacy file name defensively.
+.mcp_publisher_token

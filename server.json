@@ -1,0 +1,33 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.aniketmohite/supranalytics",
+  "title": "SuprAnalytics",
+  "description": "Read-only website traffic, conversions, revenue, funnels and performance analytics.",
+  "version": "1.0.0",
+  "websiteUrl": "https://supranalytics.app",
+  "icons": [
+    {
+      "src": "https://supranalytics.app/supranalytics-icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": ["any"]
+    },
+    {
+      "src": "https://supranalytics.app/supranalytics-apple-icon.png",
+      "mimeType": "image/png",
+      "sizes": ["180x180"]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://supranalytics.app/mcp"
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "documentationUrl": "https://supranalytics.app/docs/mcp",
+      "privacyPolicyUrl": "https://supranalytics.app/privacy",
+      "supportEmail": "support@supranalytics.app"
+    }
+  }
+}

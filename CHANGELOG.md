@@ -7,6 +7,19 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **`server.json`** (root) — Official MCP Registry metadata for the hosted
+  SuprAnalytics MCP server, published as `io.github.aniketmohite/supranalytics`
+  v1.0.0 on 2026-11-06 (remotes-only, `streamable-http`, no packages). The
+  registry version is independent of the plugin version.
+- **`REGISTRY.md`** — guide for validating, publishing, verifying and updating
+  the registry listing with `mcp-publisher`.
+- README pointer to the registry listing and a `.gitignore` rule for the legacy
+  `mcp-publisher` token filename.
+
 ## [1.2.0] — 2026-11-06
 
 ### Added

@@ -358,6 +358,12 @@ Check `hermes plugins list` to confirm the plugin is enabled, not just installed
 
 ## Directory and catalog submission
 
+**Official MCP Registry (hosted server):** The remote endpoint
+`https://supranalytics.app/mcp` is listed separately from this plugin as
+`io.github.aniketmohite/supranalytics`, described by the root-level `server.json`.
+That listing is remote-server discovery metadata only — not the backend source,
+not an npm package, not a security endorsement. See [REGISTRY.md](./REGISTRY.md).
+
 **Anthropic's directory (Claude):** Submission has not been initiated. Run
 `claude plugin validate . --strict` and follow the steps at
 [Submit a plugin](https://claude.com/docs/plugins/submit). The repository is
@@ -420,6 +426,7 @@ the final SHA. See [catalog submission guide](https://hermes-agent.nousresearch.
 - **Privacy policy:** [supranalytics.app/privacy](https://supranalytics.app/privacy)
 - **Terms of service:** [supranalytics.app/terms](https://supranalytics.app/terms)
 - **Publisher:** [suprapps.dev](https://suprapps.dev)
+- **MCP Registry publishing guide:** [REGISTRY.md](./REGISTRY.md)
 - **Existing connector listing:** [claude.ai/directory/connectors/supranalytics](https://claude.ai/directory/connectors/supranalytics)
 
 ---
