@@ -86,8 +86,7 @@ than hanging.
 
 - **Version:** 1.2.0
 - **Hermes validation:** `hermes plugins validate` from v0.23.0 source — Pass
-- **Commit SHA:** PENDING — insert 40-character SHA after `git push` of the
-  release commit, then update `supranalytics.yaml` and open this PR.
+- **Commit SHA:** `269d1aca92f98d4018beceedccd8543fe1148b24`
 
 ## Disclosure (rule 13)
 
