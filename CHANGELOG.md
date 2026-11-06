@@ -1,9 +1,48 @@
 # Changelog
 
-All notable changes to the SuprAnalytics Claude plugin are documented here.
+All notable changes to the SuprAnalytics plugin are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [1.2.0] — 2026-11-06
+
+### Added
+
+- **`plugin.json`** (root) — Agent Plugins v1.0.0 manifest enabling Hermes Agent
+  compatibility. Fields: `$schema`, `name`, `version`, `description`, `author`,
+  `homepage`, `repository`, `license`, `keywords`.
+- **`mcp.json`** (root) — Agent Plugins MCP configuration declaring the
+  SuprAnalytics remote endpoint as a `streamable-http` server.
+- **Hermes Agent support** — the five existing skills and shared reporting
+  standards are discoverable and loadable by Hermes Agent v0.23.0+. (The
+  portable `plugin.json` loader is not present in builds distributed via PyPI;
+  use the official installer from hermes-agent.nousresearch.com.)
+- **`catalog-staging/supranalytics.yaml`** — draft Hermes catalog entry
+  (pending release commit SHA; not yet submitted).
+
+### Changed
+
+- All five SKILL.md files: removed Claude-specific invocation slash-command
+  prefix (`/supranalytics:skill`) in favour of the client-agnostic form
+  (`supranalytics:skill`); added "In Claude Code, prefix with `/`." note.
+- All five SKILL.md files: replaced "open Claude settings → Connections →
+  SuprAnalytics → Authorize" auth guidance with generic "sign in through your
+  client's authentication or connection settings."
+- `README.md` updated: renamed to "SuprAnalytics Plugin"; added "Supported
+  clients" table; added Claude Code and Hermes installation, authentication,
+  and troubleshooting sections; added Known Limitations section; updated
+  Directory/catalog submission and Releasing updates sections.
+- `.claude-plugin/plugin.json` version bumped to `1.2.0`.
+
+### Status
+
+`hermes plugins validate` (v0.23.0) passes: portable manifest, manifest fields,
+config schema, security scan — all pass; isolation verdict `portable`,
+`host_ready: true`. Hermes OAuth live integration test not completed (requires
+model-provider configuration).
 
 ---
 

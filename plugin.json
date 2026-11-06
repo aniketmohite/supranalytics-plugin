@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "supranalytics",
+  "version": "1.2.0",
+  "description": "Analytics skills for SuprAnalytics: weekly reports, traffic analysis, funnel analysis, revenue analysis, and performance reviews via the SuprAnalytics MCP server.",
+  "author": {
+    "name": "SuprApps",
+    "email": "support@supranalytics.app",
+    "url": "https://suprapps.dev"
+  },
+  "homepage": "https://supranalytics.app",
+  "repository": "https://github.com/aniketmohite/supranalytics-plugin",
+  "license": "MIT",
+  "keywords": ["analytics", "web-analytics", "revenue", "funnels", "performance"]
+}

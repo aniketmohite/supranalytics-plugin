@@ -1,0 +1,48 @@
+# Hermes Plugin Catalog entry for SuprAnalytics.
+#
+# SUBMISSION STATUS: Draft — not yet submitted.
+#
+# PENDING BEFORE SUBMISSION:
+#   1. Replace PENDING_SHA below with the full 40-character SHA of the release
+#      commit. This commit must include plugin.json, mcp.json, and all five
+#      skills. Run `git rev-parse HEAD` after pushing the release commit.
+#   2. Verify that `hermes plugins validate` passes on the pinned commit.
+#      Locally verified with v0.23.0: all checks pass, exit 0.
+#   3. `requires_hermes` is set to ">=0.23.0" — verified locally: v0.23.0
+#      passes `hermes plugins validate` for portable plugin.json packages.
+#      The PyPI build (older) does not include the portable loader; the floor
+#      was confirmed by running validate_plugin_dir() from the v0.23.0 source.
+#   4. Open a PR adding only this file (renamed to supranalytics.yaml) to
+#      plugin-catalog/ in NousResearch/hermes-agent. Do not include this
+#      catalog-staging/ directory in the PR.
+#
+# SELF-REFERENTIAL PIN NOTE: The SHA pinned here cannot be the same commit
+# that adds this file to the plugin repository. Push the release commit first,
+# record its SHA, then set it here, then open the catalog PR separately.
+
+name: supranalytics
+title: SuprAnalytics
+repo: https://github.com/aniketmohite/supranalytics-plugin
+sha: PENDING_SHA  # Replace with 40-character commit SHA after release push
+description: >-
+  Five analytics workflow skills for SuprAnalytics: weekly performance reports,
+  traffic source analysis, funnel drop-off analysis, revenue attribution, and
+  Core Web Vitals / audit review. Connects to the SuprAnalytics remote MCP
+  server via OAuth. All access is read-only. Network destination:
+  https://supranalytics.app/mcp. No credentials are stored in the plugin.
+maintainer: aniketmohite
+tier: community
+category: tools
+version: "1.2.0"
+docs_url: https://supranalytics.app/docs/mcp
+readme: true
+platforms: []
+requires_hermes: ">=0.23.0"   # Verified: v0.23.0 passes hermes plugins validate
+                              # for portable plugin.json packages. PyPI build
+                              # (older) does not include the portable loader.
+capabilities:
+  provides_tools: []        # Tools are served by the remote MCP server,
+                            # not registered directly by the plugin package.
+  provides_hooks: []
+  provides_middleware: []
+  requires_env: []          # No env vars; OAuth is managed by Hermes.

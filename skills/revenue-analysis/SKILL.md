@@ -11,7 +11,7 @@ description: >
 
 # Revenue Analysis skill
 
-**Invocation:** Both user (`/supranalytics:revenue-analysis`) and Claude (automatic when relevant).
+**Invocation:** User trigger (`supranalytics:revenue-analysis`) or automatic when relevant. In Claude Code, prefix with `/`.
 
 ## Purpose
 
@@ -170,7 +170,7 @@ Never query a website that is not in the `list_websites` response. Respect acces
 - Avoid unnecessary personal data in reports.
 
 ### Authentication
-If the connection is not authenticated, explain how to connect SuprAnalytics (open Claude settings → Connections → SuprAnalytics → Authorize) rather than simulating data.
+If the connection is not authenticated, explain that SuprAnalytics authorization is required and direct the user to sign in through their client's authentication or connection settings. Do not simulate data.
 
 ### Tool efficiency
 - Fetch the minimum data needed for the requested output.

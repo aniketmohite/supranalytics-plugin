@@ -1,23 +1,34 @@
-# SuprAnalytics Claude Plugin
+# SuprAnalytics Plugin
 
-A Claude plugin that packages five analytics workflow skills on top of the
-SuprAnalytics remote MCP server. After connecting your SuprAnalytics account
-through OAuth, you can ask Claude to run weekly reports, analyse traffic,
-inspect funnels, review revenue, and audit performance — all from a Claude
-conversation.
+A portable analytics plugin that packages five workflow skills on top of the
+SuprAnalytics remote MCP server. Supported clients:
 
-> **Status:** Initial release. Not yet submitted to or approved by Anthropic's
-> directory. The plugin is fully functional for local use.
+- **Claude Code** — load with `--plugin-dir` or install via the marketplace.
+- **Hermes Agent** — install with `hermes plugins install`.
+
+After connecting your SuprAnalytics account through OAuth, ask the agent to run
+weekly reports, analyse traffic, inspect funnels, review revenue, and audit
+performance — all from a conversation.
+
+> **Status:** v1.2.0. Claude plugin submitted to review; Hermes catalog
+> submission pending. Both formats are fully functional for local use.
 
 ---
+
+## Supported clients
+
+| Client | Portable format | Minimum version | Install method |
+|--------|----------------|-----------------|----------------|
+| Claude Code | `.claude-plugin/` manifest | v2.1.281 | `--plugin-dir` or marketplace |
+| Hermes Agent | `plugin.json` (Agent Plugins v1.0.0) | v0.23.0 | `hermes plugins install` |
 
 ## How this plugin differs from the standalone connector
 
 | | Standalone connector | This plugin |
 |---|---|---|
-| What it is | An MCP connector listing in Anthropic's directory | A Claude plugin bundle |
-| What it adds | Direct access to SuprAnalytics tools | Five pre-built skills that guide Claude through analytics workflows |
-| Installation | Add from [claude.ai/directory](https://claude.ai/directory/connectors/supranalytics) | Install from this repository or Anthropic's directory (pending review) |
+| What it is | An MCP connector listing in Anthropic's directory | A portable plugin bundle |
+| What it adds | Direct access to SuprAnalytics tools | Five pre-built skills that guide the agent through analytics workflows |
+| Installation | Add from [claude.ai/directory](https://claude.ai/directory/connectors/supranalytics) | Install from this repository or agent directory (pending review) |
 | Use case | Power users calling tools directly | Anyone who wants structured, opinionated analytics reports |
 
 Both use the same `https://supranalytics.app/mcp` endpoint and the same OAuth
@@ -27,11 +38,7 @@ flow. Installing this plugin does not remove or replace the existing connector.
 
 ## Prerequisites
 
-- A Claude account (Pro, Max, Team, or Enterprise) with Claude Code or
-  claude.ai with Cowork.
-- Claude Code v2.1.281 or later (for `--strict` validation support and
-  directory listing field recognition).
-  Update: `npm install -g @anthropic-ai/claude-code@latest`
+**All clients:**
 - A SuprAnalytics account with at least one website configured.
   Sign up at [supranalytics.app](https://supranalytics.app).
 - Website data must already be tracked — the plugin reads existing analytics
@@ -44,13 +51,30 @@ flow. Installing this plugin does not remove or replace the existing connector.
 - For performance review: audit data must have been collected by SuprAnalytics
   for your website.
 
+**Claude Code:**
+- Claude Code v2.1.281 or later.
+  Update: `npm install -g @anthropic-ai/claude-code@latest`
+- A Claude account (Pro, Max, Team, or Enterprise) with Claude Code or
+  claude.ai with Cowork.
+
+**Hermes Agent:**
+- Hermes Agent v0.23.0 or later.
+  Install via the official installer (not PyPI — PyPI carries an older build that does
+  not include the portable plugin loader):
+  `curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash`
+  (see [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com) for the full guide)
+- A configured model provider (see `hermes setup` or Hermes documentation).
+- Node.js is not required for this plugin.
+
 ---
 
 ## Installation
 
-### From this repository (local development)
+---
 
-Clone or download this repository, then load the plugin for one session:
+### Claude Code
+
+**Load for one session** (clone or download this repository first):
 
 ```bash
 claude --plugin-dir ./supranalytics-plugin
@@ -58,13 +82,13 @@ claude --plugin-dir ./supranalytics-plugin
 
 Replace `./supranalytics-plugin` with the actual path to this folder.
 
-To install it for every session (adds to your personal skills directory):
+**Install permanently** (adds to your personal skills directory):
 
 ```bash
 claude plugin init supranalytics --from ./supranalytics-plugin
 ```
 
-### Validate before loading
+**Validate before loading:**
 
 ```bash
 claude plugin validate ./supranalytics-plugin --strict
@@ -72,115 +96,163 @@ claude plugin validate ./supranalytics-plugin --strict
 
 Expected output: `✔ Validation passed` with no errors or warnings.
 
-### From this repository's self-hosted marketplace
-
-Add the marketplace and install by name:
+**From this repository's self-hosted marketplace:**
 
 ```bash
 claude plugin marketplace add aniketmohite/supranalytics-plugin
 claude plugin install supranalytics@supranalytics-marketplace
 ```
 
-> This repository is public. Clone it directly or install via the marketplace
-> commands above.
-
-### From Anthropic's directory (pending review)
-
-Once approved, the plugin will be installable from
-[claude.ai/directory](https://claude.ai/directory) or directly in Claude Code
-via `/plugin`.
+**From Anthropic's directory (pending review):** Once approved, installable from
+[claude.ai/directory](https://claude.ai/directory) or via `/plugin` in Claude Code.
 
 ---
 
-## OAuth connection
+### Hermes Agent
 
-The plugin uses standard OAuth managed by Claude. No credentials are stored
-in this plugin or repository.
+**Install from GitHub (development or pre-catalog):**
 
-**To connect for the first time:**
+```bash
+hermes plugins install aniketmohite/supranalytics-plugin --no-enable
+hermes plugins enable supranalytics
+```
+
+The plugin is disabled after installation until you explicitly enable it.
+
+**Verify it loaded:**
+
+```bash
+hermes plugins list
+# supranalytics should appear as "enabled"
+```
+
+**Validate locally:**
+
+```bash
+hermes plugins validate /path/to/supranalytics-plugin --install-deps
+```
+
+Expected: no failures. Warnings about portable packages are informational.
+
+**From the Hermes catalog (pending submission):** Once listed, installable by name:
+
+```bash
+hermes plugins install supranalytics
+```
+
+> The catalog entry has not been submitted yet. Use the GitHub install command above.
+
+---
+
+---
+
+## Authentication
+
+This plugin uses OAuth managed entirely by the agent client. No credentials are
+stored in this plugin or repository. All requests go to `https://supranalytics.app/mcp`.
+
+---
+
+### Claude Code
+
+**First-time connection:**
 
 1. Load the plugin: `claude --plugin-dir ./supranalytics-plugin`
 2. Run any skill command, for example: `/supranalytics:weekly-report`
-3. Claude will pause and display: *"SuprAnalytics requires authorisation."*
+3. Claude will pause: *"SuprAnalytics requires authorisation."*
 4. A browser window opens. Log in to SuprAnalytics and approve access.
 5. Claude reconnects automatically and runs the skill.
 
-**Subsequent sessions:** OAuth tokens are managed by Claude Code. You will
-not be prompted again unless the token expires or you revoke access.
+**Subsequent sessions:** Tokens are managed by Claude Code and persist between
+sessions. You will not be prompted again unless the token expires or you revoke
+access.
 
-**To disconnect:** Claude Code settings → Connections → SuprAnalytics →
-Revoke.
+**To disconnect:** Claude Code settings → Connections → SuprAnalytics → Revoke.
 
 ---
 
-## Skills and commands
+### Hermes Agent
 
-All five skills are available as slash commands once the plugin is loaded. They
-are also automatically offered by Claude when your request matches their
-purpose.
+Authorization is handled by Hermes's native remote MCP client via standard
+OAuth discovery. No credentials are embedded in the plugin.
 
-### `/supranalytics:weekly-report`
+**First-time connection:**
+
+1. Enable the plugin: `hermes plugins enable supranalytics`
+2. Start a session: `hermes`
+3. When you first trigger a tool or skill, Hermes detects that authorization is
+   needed and opens your browser for the SuprAnalytics OAuth flow.
+4. After approving access, Hermes stores the token and continues.
+
+**Subsequent sessions:** Hermes stores and refreshes tokens automatically.
+
+**Unattended runs (cron, gateway):** An active token must already exist. A run
+without a valid token fails cleanly rather than hanging — it does not open a
+browser or block indefinitely.
+
+**To disconnect:** Remove the stored token through `hermes auth remove supranalytics`
+(exact command may vary by Hermes version; see `hermes auth --help`).
+
+---
+
+---
+
+## Skills
+
+All five skills are loaded automatically by both clients. They activate when
+you describe what you want, or you can invoke them by name.
+
+| Skill | Claude Code command | Hermes / natural trigger |
+|-------|--------------------|-----------------------------|
+| Weekly report | `/supranalytics:weekly-report` | `supranalytics:weekly-report` |
+| Traffic analysis | `/supranalytics:traffic-analysis` | `supranalytics:traffic-analysis` |
+| Funnel analysis | `/supranalytics:funnel-analysis` | `supranalytics:funnel-analysis` |
+| Revenue analysis | `/supranalytics:revenue-analysis` | `supranalytics:revenue-analysis` |
+| Performance review | `/supranalytics:performance-review` | `supranalytics:performance-review` |
+
+In Claude Code, prefix with `/`. In Hermes, use the bare `plugin:skill` form or
+just describe what you want naturally.
+
+### Weekly report
 
 Produces a weekly website performance report.
-
 Default period: last 7 days vs. the preceding 7 days.
 
-Example prompts:
-- "Give me a weekly report for my site"
-- "How did supranalytics.app perform last week?"
-- `/supranalytics:weekly-report`
+Example prompts: "Give me a weekly report", "How did my site do last week?"
 
-### `/supranalytics:traffic-analysis`
+### Traffic analysis
 
 Explains where visitors come from and which sources and pages matter.
-
 Default period: last 30 days.
 
-Example prompts:
-- "Where does my traffic come from?"
-- "Show me my top sources and pages this month"
-- "Analyse my organic vs direct traffic"
-- `/supranalytics:traffic-analysis`
+Example prompts: "Where does my traffic come from?", "Show me my top sources"
 
-### `/supranalytics:funnel-analysis`
+### Funnel analysis
 
-Identifies conversion drop-offs in a saved funnel.
-
+Identifies conversion drop-offs in a saved SuprAnalytics funnel.
 Default period: last 30 days.
 
-Example prompts:
-- "Show me my checkout funnel"
-- "Where do people drop off in my sign-up flow?"
-- "Analyse funnel conversion rates"
-- `/supranalytics:funnel-analysis`
+Example prompts: "Show me my checkout funnel", "Where do people drop off?"
 
-### `/supranalytics:revenue-analysis`
+### Revenue analysis
 
 Reports revenue totals, sources, and conversion trends.
-
 Default period: last 30 days vs. the preceding 30 days.
 
-Example prompts:
-- "How much revenue did my site generate this month?"
-- "Which channels drive the most revenue?"
-- "Show me revenue by source"
-- `/supranalytics:revenue-analysis`
+Example prompts: "How much revenue this month?", "Which channels drive revenue?"
 
-### `/supranalytics:performance-review`
+### Performance review
 
 Reviews Core Web Vitals, audit findings, and uptime.
-
 Default: latest available audit + last 30 days of field data.
 
-Example prompts:
-- "How fast is my website?"
-- "Show me Core Web Vitals and audit findings"
-- "Review my site performance"
-- `/supranalytics:performance-review`
+Example prompts: "How fast is my site?", "Show Core Web Vitals and audit findings"
 
 ---
 
-## Supported Claude surfaces
+## Supported surfaces
+
+### Claude Code
 
 | Surface | Skills | MCP tools |
 |---------|--------|-----------|
@@ -191,6 +263,14 @@ Example prompts:
 
 See the [component support table](https://claude.com/docs/plugins/platform-support#compare-component-support-by-app)
 for details on which components load on each surface.
+
+### Hermes Agent
+
+| Surface | Skills | MCP tools |
+|---------|--------|-----------|
+| Hermes terminal | Yes | Yes |
+| Hermes Desktop | Yes | Yes |
+| Hermes messaging gateway (cron/unattended) | Yes | Yes (requires pre-authorized token) |
 
 ---
 
@@ -232,18 +312,21 @@ See the full privacy policy: [supranalytics.app/privacy](https://supranalytics.a
 
 ## Troubleshooting
 
-### "Authentication required" or no data appears
+### Authentication required / no data appears
 
-You are not yet connected. When Claude prompts for authorisation, follow the
-OAuth flow in your browser. If the prompt does not appear, type
-`/supranalytics:weekly-report` to trigger it manually.
+**Claude Code:** When Claude prompts for authorisation, follow the OAuth flow
+in your browser. If the prompt does not appear, type `/supranalytics:weekly-report`
+to trigger it manually.
+
+**Hermes:** When you first use a tool or skill, Hermes opens your browser for
+the OAuth flow automatically. If this does not happen, check `hermes plugins list`
+to confirm the plugin is enabled, then run a skill to trigger the auth flow.
 
 ### "No websites found" or empty website list
 
-Your SuprAnalytics account has no accessible websites. Either no websites have
-been added, or the connected account does not have permission to view them.
-Log in to [supranalytics.app](https://supranalytics.app) to verify your
-websites and permissions.
+Your SuprAnalytics account has no accessible websites. Log in to
+[supranalytics.app](https://supranalytics.app) to verify your websites and
+permissions.
 
 ### "No funnels configured"
 
@@ -252,51 +335,81 @@ SuprAnalytics dashboard under Funnels, then re-run the skill.
 
 ### "No revenue data available"
 
-Revenue tracking must be configured in SuprAnalytics. This requires e-commerce
-events or revenue goals to be set up and receiving data. The plugin cannot
-access payment data that has not been sent to SuprAnalytics.
+Revenue tracking must be configured in SuprAnalytics (e-commerce events or
+revenue goals). The plugin cannot access payment data not already sent to
+SuprAnalytics.
 
 ### Empty reports or all-zero metrics
 
 Possible causes: the selected period predates your tracking start date; the
-website was recently added and has no data yet; the MCP server returned an
-empty result for the requested dimension. The plugin reports what the API
-returned, including zeros and empty lists.
+website was recently added; the MCP server returned empty data for the requested
+dimension. The plugin reports what the API returned, including zeros and empty
+lists.
 
 ### Plugin not loading or missing skills
 
-Run `claude plugin validate ./supranalytics-plugin --strict` to check for
-manifest errors. Run `/plugin` inside a session to see the **Errors** tab.
+**Claude Code:** Run `claude plugin validate ./supranalytics-plugin --strict`.
+Inside a session, run `/plugin` → **Errors** tab.
+
+**Hermes:** Run `hermes plugins validate /path/to/supranalytics-plugin --install-deps`.
+Check `hermes plugins list` to confirm the plugin is enabled, not just installed.
 
 ---
 
-## Directory submission
+## Directory and catalog submission
 
-**Submission has not been initiated.** Before submitting to Anthropic's
-directory at [claude.ai/directory/manage](https://claude.ai/directory/manage):
+**Anthropic's directory (Claude):** Submission has not been initiated. Run
+`claude plugin validate . --strict` and follow the steps at
+[Submit a plugin](https://claude.com/docs/plugins/submit). The repository is
+already public.
 
-1. Create a GitHub repository for this plugin folder.
-2. Add the repository URL to `"repository"` in `.claude-plugin/plugin.json`.
-3. Run `claude plugin validate . --strict` once more from the repo root.
-4. Follow the submission steps in [Submit a plugin](https://claude.com/docs/plugins/submit).
+**Hermes catalog:** A draft catalog entry is staged at
+`catalog-staging/supranalytics.yaml` in this repository. Before submitting,
+the entry must be pinned to the final release commit SHA. Open a PR adding
+`plugin-catalog/supranalytics.yaml` to `NousResearch/hermes-agent` with
+the final SHA. See [catalog submission guide](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission).
 
-**Private repository and review:** Anthropic's portal can review a plugin
-from a private repository if you grant GitHub access during submission.
-However, **publication requires a public repository** — the plugin cannot be
-listed publicly in the directory while the source repository remains private.
+---
+
+## Known limitations
+
+- **Hermes minimum version: v0.23.0.** The Agent Plugins v1.0.0 `plugin.json`
+  portable format and `hermes plugins validate` command are present in v0.23.0
+  (verified: validation passes, isolation verdict `portable`, all checks pass).
+  The PyPI package (`pip install hermes-agent`) carries an older build that does
+  not include the portable loader. Use the official installer from
+  [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com) to get
+  v0.23.0 or later.
+- **Hermes OAuth live test:** The OAuth flow through Hermes's native remote MCP
+  client was not tested end-to-end against the live `supranalytics.app`
+  endpoint in this implementation pass. The portable `streamable-http` transport
+  relies on Hermes's standard MCP OAuth discovery. Report issues at
+  [support@supranalytics.app](mailto:support@supranalytics.app).
+- **Hermes catalog listing:** Not yet submitted. Install via the GitHub URL
+  (`hermes plugins install aniketmohite/supranalytics-plugin`) until the
+  catalog entry is accepted. Note: `--no-enable` omitted above because earlier
+  builds (before v0.23.0) produced a "not a valid Hermes plugin" warning for
+  portable packages; this is resolved in v0.23.0.
+- **Skill naming in Hermes:** Skills are namespaced as `supranalytics:<skill>`.
+  If another installed plugin registers the same qualified name, the later-loaded
+  one is skipped with a warning.
+- **Read-only access:** All skills are read-only. No data can be changed, deleted,
+  or created through this plugin.
 
 ---
 
 ## Releasing updates
 
 1. Make changes to any file in this repository.
-2. Increment `"version"` in `.claude-plugin/plugin.json`.
+2. Increment `"version"` in both `.claude-plugin/plugin.json` and `plugin.json`.
 3. Add a changelog entry in `CHANGELOG.md`.
 4. Commit and push to the repository.
-5. Users with the marketplace added run:
-   `claude plugin update supranalytics@supranalytics-marketplace`
-6. For the directory listing, open `claude.ai/directory/manage` and push the
-   new version for review.
+5. **Claude Code:** Users with the marketplace added run
+   `claude plugin update supranalytics@supranalytics-marketplace`.
+   For the directory listing, open `claude.ai/directory/manage` and push for review.
+6. **Hermes:** Open a SHA-bump PR in `NousResearch/hermes-agent` updating the
+   `sha` field in `plugin-catalog/supranalytics.yaml` to the new commit.
+   Users then run `hermes plugins update supranalytics`.
 
 ---
 
