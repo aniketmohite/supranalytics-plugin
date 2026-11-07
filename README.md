@@ -364,6 +364,12 @@ Check `hermes plugins list` to confirm the plugin is enabled, not just installed
 That listing is remote-server discovery metadata only — not the backend source,
 not an npm package, not a security endorsement. See [REGISTRY.md](./REGISTRY.md).
 
+**Glama (connector directory):** Glama imported the registry entry automatically
+as <https://glama.ai/mcp/connectors/io.github.aniketmohite/supranalytics>.
+Ownership claim and authenticated health checks are documented in
+[GLAMA.md](./GLAMA.md). No separate submission and no GitHub-source listing of
+this plugin repository are needed.
+
 **Anthropic's directory (Claude):** Submission has not been initiated. Run
 `claude plugin validate . --strict` and follow the steps at
 [Submit a plugin](https://claude.com/docs/plugins/submit). The repository is
@@ -427,6 +433,7 @@ the final SHA. See [catalog submission guide](https://hermes-agent.nousresearch.
 - **Terms of service:** [supranalytics.app/terms](https://supranalytics.app/terms)
 - **Publisher:** [suprapps.dev](https://suprapps.dev)
 - **MCP Registry publishing guide:** [REGISTRY.md](./REGISTRY.md)
+- **Glama listing guide:** [GLAMA.md](./GLAMA.md)
 - **Existing connector listing:** [claude.ai/directory/connectors/supranalytics](https://claude.ai/directory/connectors/supranalytics)
 
 ---
