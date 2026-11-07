@@ -11,15 +11,27 @@ description: >
 
 # Traffic Analysis skill
 
-**Invocation:** User trigger (`supranalytics:traffic-analysis`) or automatic when relevant. In Claude Code, prefix with `/`.
+**Invocation:** Automatic when relevant, or by name: `/supranalytics:traffic-analysis` for the Claude Code plugin, `/traffic-analysis` for a standalone Claude Code install, and `supranalytics:traffic-analysis` for the Hermes plugin.
 
 ## Purpose
 
 Explain where visitors come from and which sources and pages matter. Default period is the last 30 days.
 
+## Connect SuprAnalytics
+
+This skill reads data through the SuprAnalytics MCP server at `https://supranalytics.app/mcp`. Plugin installs include this server. Standalone skill installs do not.
+
+Before doing anything else, check that the `list_websites` tool is available. Clients may add a prefix to the name (for example, `mcp__supranalytics__list_websites`) or load tools on demand, so search for the tool if your client supports tool search.
+
+If the tool is unavailable, stop. Do not produce a report, estimate figures, or use another data source. Tell the user that SuprAnalytics is not connected and give them these steps:
+
+1. Add the server, unless it is already configured. In Claude Code, run `claude mcp add --transport http --scope user supranalytics https://supranalytics.app/mcp`. In other clients, add a remote MCP server with that URL.
+2. Sign in. In Claude Code, start a new session, run `/mcp`, select the SuprAnalytics server, and finish signing in through the browser. In other clients, use the client's authentication or connection settings.
+3. Run the request again.
+
 ## Shared reporting standards
 
-Load `skills/shared/REPORTING.md` before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure.
+Load `references/REPORTING.md` (relative to this skill's directory) before executing this skill. The standards in that file govern interpretation, units, missing vs zero, dates, sample sizes, and output structure. If you cannot read the file, stop and tell the user why. Do not produce a report without these standards.
 
 ---
 
