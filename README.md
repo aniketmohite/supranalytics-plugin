@@ -10,7 +10,7 @@ After connecting your SuprAnalytics account through OAuth, ask the agent to run
 weekly reports, analyse traffic, inspect funnels, review revenue, and audit
 performance — all from a conversation.
 
-> **Status:** v1.2.0. Claude plugin submitted to review; Hermes catalog
+> **Status:** v1.3.0. Claude plugin submitted to review; Hermes catalog
 > submission pending. Both formats are fully functional for local use.
 
 ---
@@ -105,6 +105,28 @@ claude plugin install supranalytics@supranalytics-marketplace
 
 **From Anthropic's directory (pending review):** Once approved, installable from
 [claude.ai/directory](https://claude.ai/directory) or via `/plugin` in Claude Code.
+
+---
+
+### Standalone skills
+
+To install the skills without the plugin, use the
+[skills CLI](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add aniketmohite/supranalytics-plugin --skill '*' --agent claude-code
+```
+
+A standalone install includes the skills and their reporting standards, but not
+the MCP server. To add the server in Claude Code:
+
+```bash
+claude mcp add --transport http --scope user supranalytics https://supranalytics.app/mcp
+```
+
+Then start a new session, run `/mcp`, select the SuprAnalytics server, and sign in
+through your browser. If the server is not connected, the skills stop and show
+these steps.
 
 ---
 
@@ -211,7 +233,8 @@ you describe what you want, or you can invoke them by name.
 | Performance review | `/supranalytics:performance-review` | `supranalytics:performance-review` |
 
 In Claude Code, prefix with `/`. In Hermes, use the bare `plugin:skill` form or
-just describe what you want naturally.
+just describe what you want naturally. A standalone Claude Code install has no
+plugin prefix, so the command is just the skill name, for example `/weekly-report`.
 
 ### Weekly report
 
@@ -406,7 +429,9 @@ the final SHA. See [catalog submission guide](https://hermes-agent.nousresearch.
 
 ## Releasing updates
 
-1. Make changes to any file in this repository.
+1. Make changes to any file in this repository. If you edit
+   `skills/shared/REPORTING.md`, copy it to each skill's `references/` folder and
+   run `sh tests/check-reporting-sync.sh`.
 2. Increment `"version"` in both `.claude-plugin/plugin.json` and `plugin.json`.
 3. Add a changelog entry in `CHANGELOG.md`.
 4. Commit and push to the repository.

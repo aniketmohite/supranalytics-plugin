@@ -9,6 +9,8 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-11-09
+
 ### Added
 
 - **`server.json`** (root) — Official MCP Registry metadata for the hosted
@@ -19,6 +21,22 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the registry listing with `mcp-publisher`.
 - README pointer to the registry listing and a `.gitignore` rule for the legacy
   `mcp-publisher` token filename.
+- **`skills/<skill>/references/REPORTING.md`** — each skill now bundles the shared
+  reporting standards, so they are available when a skill is installed on its own.
+  `skills/shared/REPORTING.md` remains the source of truth.
+- **`tests/check-reporting-sync.sh`** — fails if a bundled copy is missing or
+  differs from the source, or if a skill does not load its own copy. A GitHub
+  Actions workflow runs it on every push and pull request.
+- README section on installing the skills on their own with the skills CLI.
+
+### Changed
+
+- All five SKILL.md files: added MCP setup steps, and the skill now stops if
+  `list_websites` is unavailable.
+- All five SKILL.md files: the skill now stops if it cannot read its reporting
+  standards, instead of producing a report without them.
+- All five SKILL.md files: the invocation line now lists the Claude Code plugin,
+  standalone Claude Code, and Hermes forms.
 
 ## [1.2.0] — 2026-11-06
 
