@@ -1,97 +1,48 @@
-# SuprAnalytics — Hermes Catalog Submission
+## Summary
 
-> **Status:** Ready. SHA pinned, validation passed, live MCP test passed.
+Bumps `supranalytics` from 1.2.0 to 1.3.0 under rule 4. The diff changes only `sha` and `version`.
 
----
+- Old pin: `269d1aca92f98d4018beceedccd8543fe1148b24` (1.2.0)
+- New pin: `84b5d2298d559b0f36327c5117aea8968b6c7003` (1.3.0, the squash commit on `main`)
+- Commit range: https://github.com/aniketmohite/supranalytics-plugin/compare/269d1aca92f98d4018beceedccd8543fe1148b24...84b5d2298d559b0f36327c5117aea8968b6c7003
 
-## What SuprAnalytics does
+## Why
 
-SuprAnalytics is a web analytics platform. This plugin packages five analytics
-workflow skills that guide the agent through structured reporting tasks on top
-of the SuprAnalytics MCP server:
+The 1.2.0 skills load their reporting standards from `../shared/REPORTING.md`. Hermes's `skill_view` refuses that path with "Path traversal ('..') is not allowed", so under Hermes the skills ran without them. In 1.3.0, each skill bundles its own copy as `references/REPORTING.md`, and Hermes serves that file as a linked file.
 
-- **weekly-report** — 7-day performance snapshot vs. prior 7 days (traffic,
-  sources, pages, goals, revenue)
-- **traffic-analysis** — traffic source, channel, page, and referrer breakdown
-  over 30 days
-- **funnel-analysis** — step-by-step conversion drop-off analysis for saved
-  SuprAnalytics funnels
-- **revenue-analysis** — revenue totals, source attribution, customer counts,
-  and prior-period comparison
-- **performance-review** — Core Web Vitals (LCP, INP, CLS), supporting metrics
-  (FCP, TTFB), audit findings, and uptime incidents
+## What changed in the range
 
-Skills include tested safeguards against common interpretation errors
-(unsupported causal claims, unknown duration units, missing-vs-zero
-conflation, localhost-referrer inference, coverage inference from creation
-dates).
+- **Skills:** each skill adds `references/REPORTING.md` and loads it in place of the shared path. Each skill also stops if it can't read the file, and stops with setup steps if the SuprAnalytics MCP server isn't connected.
+- **Manifests:** `plugin.json` changes only its version, and `mcp.json` doesn't change.
+- **Repo files outside the runtime:**
+  - a CI sync check for the bundled copies
+  - `server.json` and `REGISTRY.md` for the Official MCP Registry listing
+  - README and changelog updates
+- **No code:** the range adds no Python, no binaries and no new network destinations.
 
-## Format and Hermes surfaces
-
-- **Package format:** Agent Plugins v1.0.0 portable package (`plugin.json` +
-  `mcp.json` + `skills/`)
-- **Hermes surfaces used:** Skills (five SKILL.md files) and remote MCP server
-  via Streamable HTTP transport
-- **Shared skills reference file:** `skills/shared/REPORTING.md` (loaded by
-  all five skills; not registered as a skill itself)
-- No Python code, no native binaries, no background processes, no bundled
-  executables
-
-## Network and data access
-
-- **Network destination:** `https://supranalytics.app/mcp` only (Streamable
-  HTTP MCP endpoint)
-- **Access type:** Read-only analytics data for the authenticated user's
-  websites
-- **Data scope:** Website traffic, sources, funnels, revenue goals, Core Web
-  Vitals, audit findings, uptime
-- **No telemetry** in the plugin itself; SuprAnalytics may collect usage data
-  per its privacy policy: https://supranalytics.app/privacy
-- **Terms of service:** https://supranalytics.app/terms
-
-## Authentication
-
-OAuth is managed entirely by Hermes's native remote MCP client via standard
-MCP OAuth discovery. The plugin stores no credentials. Users authorize on
-first use via a browser OAuth flow; Hermes stores and refreshes the token.
-Unattended runs (cron, gateway) fail cleanly if no valid token exists rather
-than hanging.
-
-## Validation results
+## Validation (Hermes v0.23.0, installed with `--ref` at the new SHA)
 
 | Check | Result |
-|-------|--------|
-| `plugin.json` schema (Agent Plugins v1.0.0) | Pass — validated against published schema |
-| `mcp.json` schema (Agent Plugins v1.0.0) | Pass — validated against published schema |
-| Claude strict validation (`claude plugin validate --strict`) | Pass — exit 0, `✔ Validation passed` |
-| `hermes plugins validate` (v0.23.0) | Pass — `portable manifest`, `manifest fields`, `config schema`, `security scan` all pass; isolation verdict `portable`, `host_ready: true`; exit 0 |
-| `hermes plugins validate --install-deps` | **Not run** — `--install-deps` triggers `pm.sync_venv`; irrelevant for a pure remote MCP plugin (no Python deps to install) |
-| Hermes loader live test (v0.23.0) | Pass — `hermes plugins install aniketmohite/supranalytics-plugin` → installed, enabled, `portable=True`, all 5 skills discovered as `supranalytics:<skill>`, MCP server `supranalytics` registered |
-| Hermes MCP live test (v0.23.0) | Pass — `list_websites` returned 2 websites; `get_overview`, `get_breakdown`, `get_pages` returned live analytics data; full weekly report generated end-to-end |
-| Skill static review | Pass — all five skills reviewed for client-specific syntax; invocation lines and auth messages made client-agnostic |
+|---|---|
+| `hermes plugins install` | Pass: enabled, version 1.3.0 |
+| `hermes plugins validate` | Pass: portable manifest, manifest fields, config schema, security scan safe; isolation portable |
+| `hermes plugins doctor` | Pass |
+| `skill_view` on all five skills | Pass: each lists `references/REPORTING.md` as a linked file and returns it identical to the source |
+| `skill_view` with the 1.2.0 path `../shared/REPORTING.md` | Refused, as expected |
 
-## Known limitations
-
-- `requires_hermes: ">=0.23.0"` — the tested supported version. The PyPI
-  package does not include the portable loader; users must install via the
-  official installer at https://hermes-agent.nousresearch.com/install.sh.
-- OAuth browser flow was not tested (live test used Bearer token auth).
-  The `streamable-http` transport supports Hermes's standard MCP OAuth
-  discovery; users without an API key will authenticate via the browser flow.
-
-## Tested version and commit
-
-- **Version:** 1.2.0
-- **Hermes validation:** `hermes plugins validate` v0.23.0 CLI — Pass
-- **Hermes live test:** install, enable, skill discovery, MCP connection, analytics data — all Pass
-- **Commit SHA:** `269d1aca92f98d4018beceedccd8543fe1148b24`
+These checks called Hermes's `skill_view` directly. The live MCP test from the original submission wasn't rerun, because the server and `mcp.json` haven't changed.
 
 ## Disclosure (rule 13)
 
-- Makes HTTPS requests to `https://supranalytics.app/mcp` on every tool call
-- Reads website analytics data for accounts the authenticated user can access
-- No shell commands, no background processes, no self-updating code
-- No data forwarded to third-party services
-- Authentication token stored and managed by Hermes (not by the plugin)
-- SuprAnalytics collects usage analytics per its own privacy policy
-  (https://supranalytics.app/privacy); the plugin itself collects nothing
+Unchanged from the current entry:
+- Every tool call goes to `https://supranalytics.app/mcp`.
+- All access is read-only, with OAuth tokens stored and managed by Hermes.
+- The plugin has no shell commands, background processes or self-updating code.
+
+## Links
+
+- Plugin repo: https://github.com/aniketmohite/supranalytics-plugin
+- Release PR: https://github.com/aniketmohite/supranalytics-plugin/pull/1
+- Original catalog PR: #150176
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
