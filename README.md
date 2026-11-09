@@ -10,7 +10,7 @@ After connecting your SuprAnalytics account through OAuth, ask the agent to run
 weekly reports, analyse traffic, inspect funnels, review revenue, and audit
 performance — all from a conversation.
 
-> **Status:** v1.2.0. Claude plugin submitted to review; Hermes catalog
+> **Status:** v1.3.0. Claude plugin submitted to review; Hermes catalog
 > submission pending. Both formats are fully functional for local use.
 
 ---
