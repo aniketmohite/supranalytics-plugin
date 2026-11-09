@@ -19,8 +19,7 @@ root-level [`server.json`](./server.json).
 - Registration is **not** a security certification or endorsement by the MCP
   project, and it does **not** guarantee inclusion in downstream directories
   (for example client marketplaces or connector catalogs), which apply their own
-  review. Glama does import every registry entry as a connector and keeps its
-  name, description and URL in sync with this entry; see [GLAMA.md](./GLAMA.md).
+  review.
 
 ## Identity
 
