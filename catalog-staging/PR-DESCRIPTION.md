@@ -29,8 +29,9 @@ The 1.2.0 skills load their reporting standards from `../shared/REPORTING.md`. H
 | `hermes plugins doctor` | Pass |
 | `skill_view` on all five skills | Pass: each lists `references/REPORTING.md` as a linked file and returns it identical to the source |
 | `skill_view` with the 1.2.0 path `../shared/REPORTING.md` | Refused, as expected |
+| Full Hermes conversation: OAuth sign-in with `hermes mcp login supranalytics`, then `supranalytics:weekly-report` | Pass: the skill reads `references/REPORTING.md` before any data call, and the report completes |
 
-These checks called Hermes's `skill_view` directly. The live MCP test from the original submission wasn't rerun, because the server and `mcp.json` haven't changed.
+The full conversation used an OpenAI model and the plugin installed at the new SHA.
 
 ## Disclosure (rule 13)
 
